@@ -24,7 +24,7 @@ namespace ECNS.Domainn.Models.Entities
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
         public Status Status { get; set; }
-        public List<Cart_Product>  Cart_Products { get; set; }
+
 
 
     }

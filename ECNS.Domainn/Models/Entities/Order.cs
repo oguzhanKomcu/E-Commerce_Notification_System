@@ -16,7 +16,7 @@ namespace ECNS.Domainn.Models.Entities
         public int Amount { get; set; }
         public int Payment_ID { get; set; }
         
-        public string Shipping_Id { get; set; }
+        public int Shipping_Id { get; set; }
         public Shipper Shipper { get; set; }
         public string Order_Address { get; set; }
 

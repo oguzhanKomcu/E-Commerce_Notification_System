@@ -15,12 +15,11 @@ namespace ECNS.Application.Notifications
         private readonly Product _product;
         private List<IUserNotifications> _users;
 
-        private readonly ICartService _cartService;
 
-        public ProductNotifications(Product product,ICartService cartService)
+
+        public ProductNotifications()
         {
-            _product = product;
-            _cartService = cartService;
+
 
             _users = new List<IUserNotifications>();
    
@@ -59,8 +58,7 @@ namespace ECNS.Application.Notifications
         {
 
             _users.Add(userNotifications);
-            var cart = _cartService.GetProductByUsers(_product.Id);
-            //var user = 
+    
 
         }
     }

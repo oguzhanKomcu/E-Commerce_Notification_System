@@ -20,11 +20,7 @@ namespace ECNS.Application.FluentValidation
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .WithMessage("Enter a password");
-            RuleFor(x => x.ConfirmPassword)
-                .NotEmpty()
-                .WithMessage("Enter a password")
-                .Equal(x => x.Password)
-                .WithMessage("Password don't match");
+
             RuleFor(x => x.UserName)
                .NotEmpty()
                .WithMessage("Enter a user name")

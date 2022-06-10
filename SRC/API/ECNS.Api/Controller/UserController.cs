@@ -43,7 +43,7 @@ namespace ECNS.Api.Controller
         /// This function lists all made user.
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("Users")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userRepository.GetUsers().ConfigureAwait(false));

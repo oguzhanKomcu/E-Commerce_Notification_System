@@ -9,6 +9,8 @@ namespace ECNS.Application.Model.VMs
     public class CartVM
     {
         public string User_Id { get; set; }
+        public string UserName { get; set; }
+        public string UserEmail { get; set; }
         public int Product_Id { get; set; }
         public string Product_Name { get; set; }
         public int Product_Quantity { get; set; }

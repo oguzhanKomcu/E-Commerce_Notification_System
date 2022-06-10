@@ -1,4 +1,9 @@
 ﻿
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using ECNS.Application.AutoMapper;
+using ECNS.Application.IoC;
 using ECNS.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -87,6 +87,37 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+});
+    
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+{
+    builder.RegisterModule(new DependencyResolver());
+});
+
+//builder.(context => new MapperConfiguration(cfg =>
+//{
+//    //Register Mapper Profile
+//    cfg.AddProfile<Mapping>();
+//}
+//          )).AsSelf().SingleInstance();
+
+//builder.Register(c =>
+//{
+//    //This resolves a new context that can be used later.
+//    var context = c.Resolve<IComponentContext>();
+//    var config = context.Resolve<MapperConfiguration>();
+//    return config.CreateMapper(context.Resolve);
+//})
+//.As<IMapper>()
+//.InstancePerLifetimeScope();
+
 
 var app = builder.Build();
 

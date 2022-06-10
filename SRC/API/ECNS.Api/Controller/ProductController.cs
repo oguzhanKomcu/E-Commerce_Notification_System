@@ -1,4 +1,5 @@
 ﻿using ECNS.Application.Model.DTOs;
+using ECNS.Application.Notifications;
 using ECNS.Application.Service.CartService;
 using ECNS.Application.Service.ProductService;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECNS.Api.Controller
 {
 
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -33,7 +34,7 @@ namespace ECNS.Api.Controller
         /// This function lists all made reservations.
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("GetProducts")]
         public async Task<IActionResult> GetProducts()
         {
             return Ok(await _productService.GetProducts());
@@ -44,7 +45,7 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// This function returns the reservation whose "id" is given.
+        /// This function returns the product whose "id" is given.
         /// </summary>
         /// <param name="id">It is a required area and so type is string</param>
         /// <returns>If function is succeded will be return Ok, than will be return NotFound</returns>
@@ -65,7 +66,7 @@ namespace ECNS.Api.Controller
         }
 
         /// <summary>
-        /// You can add a new reservation using this method.
+        /// 
         /// </summary>
         /// <param></param>
         /// <returns>If function is succeded will be return CreatedAtAction, than will be return Bad Request</returns>        
@@ -97,9 +98,18 @@ namespace ECNS.Api.Controller
 
                 foreach (var item in users)
                 {
-                    var user = users.Select(x => x.Product_Price > product.Price).FirstOrDefault();
+                    var user = users.Select(x => x.Product_Price == product.Price).FirstOrDefault();
 
-
+                    if (user != true)
+                    {
+                        //var user1 = users.Select(x => x.Product_Price > product.Price).FirstOrDefault();
+                        
+                        if (users.Select(x => x.Product_Price > product.Price).FirstOrDefault())
+                        {
+                            ProductNotifications productNotifications = new ProductNotifications();
+                            productNotifications.Subscribe(new UserNotifications(item.UserName));
+                        }
+                    }
 
                 }
                
@@ -125,7 +135,7 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// This function can remove your reservation. 
+        /// This function can remove your product. 
         /// </summary>
         /// <param name="id">It is a required area and so type is int</param>
         /// <returns>If function is succeded will be return NoContent, than will be return NotFound</returns>        

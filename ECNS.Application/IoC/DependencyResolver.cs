@@ -9,6 +9,8 @@ using ECNS.Application.Service.ProductService;
 using ECNS.Domainn.UoW;
 using ECNS.Infrastructure.UoW;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,18 +29,17 @@ namespace ECNS.Application.IoC
 
             base.Load(builder);
 
-            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
 
-
-
+            //builder.RegisterType<RoleStore<IdentityRole>>().As<IRoleStore<IdentityRole, string>>();
 
 
 
             #region Services
 
-            builder.RegisterType<AppUserService>().As<IAppUserService>().InstancePerLifetimeScope();
-            builder.RegisterType<ProductService>().As<IProductService>().InstancePerLifetimeScope();
-            builder.RegisterType<CartService>().As<ICartService>().InstancePerLifetimeScope();
+            builder.RegisterType<AppUserService>().As<IAppUserService>();
+            builder.RegisterType<ProductService>().As<IProductService>();
+            builder.RegisterType<CartService>().As<ICartService>();
 
 
             #endregion

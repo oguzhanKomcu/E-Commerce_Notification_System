@@ -81,6 +81,8 @@ namespace ECNS.Application.Service.CartService
               selector: x => new CartVM
               {
                   User_Id = x.User_Id,
+                  UserName = x.AppUser.UserName,
+                  UserEmail = x.AppUser.Email,
                   Product_Quantity = x.Quantity,
                   Product_Id = x.Product_Id,
                   Product_Name = x.Product.Name,
