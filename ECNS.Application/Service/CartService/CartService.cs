@@ -26,16 +26,33 @@ namespace ECNS.Application.Service.CartService
         public async Task Create(CartDto model)
         {
 
-            var cart1 = _unitOfWork.CartRepository.GetDefault(x => x.User_Id == model.User_Id);
-            if (cart1 == null)
+            
+            var cart1 = _unitOfWork.CartRepository.GetFilteredFirstOrDefault(
+              selector: x => new CartVM
+              {
+                  User_Id = x.User_Id,
+                  Product_Quantity = x.Quantity,
+                  Product_Id = x.Product_Id,
+                  Product_Name = x.Product.Name,
+                  Product_Price = x.Product.Price,
+                  Total_Amount = x.Product.Price * x.Quantity
+              },
+
+              expression: x => x.User_Id == model.User_Id &&
+                              x.Status != Status.Passive);
+
+            if (cart1.Result == null)
             {
                 var cart = _mapper.Map<Cart>(model);
+     
                 await _unitOfWork.CartRepository.Create(cart);
+                await _unitOfWork.Commit();
             }
             else
             {
 
-                var cart3 = await _unitOfWork.CartRepository.GetDefault(x => x.User_Id == model.User_Id);
+                var cart3 = await _unitOfWork.CartRepository.GetDefault(x => x.User_Id == model.User_Id &&
+                              x.Status != Status.Passive);
                 cart3.Quantity += 1;
                 await _unitOfWork.Commit();
 
@@ -74,6 +91,12 @@ namespace ECNS.Application.Service.CartService
  
             return cart;
         }
+
+
+
+
+
+
 
         public async Task<List<CartVM>> GetProductByUsers(int productId)
         {

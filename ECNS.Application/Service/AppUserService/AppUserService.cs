@@ -6,6 +6,7 @@ using ECNS.Domainn.Models.Entities;
 using ECNS.Domainn.UoW;
 using ECNS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -27,42 +28,62 @@ namespace ECNS.Application.Service.AppUserService
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly AppDbContext _context;
+        private readonly AppSettings _appSettings;
 
-        public AppUserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, AppDbContext context)
+        public AppUserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, AppDbContext context, IOptions<AppSettings> appSettings)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _appSettings = appSettings.Value;
+
         }
 
-        public AppUser Authentication(string userName, string password)
+        public async Task<AppUser>  Authentication(string userName, string password)
         {
-            var user = _context.AppUsers.SingleOrDefault(x => x.UserName == userName &&
-                                                              x.PasswordHash == password);
+    
+        
+           
+     
+            var user = _context.AppUsers.SingleOrDefault(x => x.UserName == userName );
 
-            if (user == null)
+            
+            
+            if (user != null && await _userManager.CheckPasswordAsync(user, password))
             {
-                return null;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                try
+                {
+                    var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
+                    var tokenDescriptor = new SecurityTokenDescriptor()
+                    {
+                        Subject = new ClaimsIdentity(new Claim[] {
+                        new Claim(ClaimTypes.Name, user.Id.ToString())
+                    }),
+                        Expires = DateTime.UtcNow.AddDays(7),
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+                    user.Token = tokenHandler.WriteToken(token);
+                }
+                catch (Exception e)
+                {
+
+                    throw e;
+                }
+              
+
+                return user;
             }
             else
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_context.SecretKey);
-                var tokenDescriptor = new SecurityTokenDescriptor()
-                {
-                    Subject = new ClaimsIdentity(new Claim[] {
-                        new Claim(ClaimTypes.Name, user.Id.ToString())
-                    }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                user.Token = tokenHandler.WriteToken(token);
 
-                return user;
+
+                return null;
             }
         }
 

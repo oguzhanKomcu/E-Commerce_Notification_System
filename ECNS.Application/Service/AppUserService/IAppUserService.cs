@@ -15,7 +15,7 @@ namespace ECNS.Application.Service.AppUserService
         Task<IdentityResult> Register(RegisterDTO model);
         Task<SignInResult> Login(LoginDTO model);
         Task LogOut();
-        AppUser Authentication(string userName, string password);
+        Task<AppUser>  Authentication(string userName, string password);
         Task<List<GetAppUserVm>> GetUsers();
         bool IsUniqeuUser(string userName);
         Task UpdateUser(UpdateProfileDTO model);

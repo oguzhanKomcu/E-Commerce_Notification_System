@@ -37,7 +37,7 @@ namespace ECNS.Application.Notifications
             }
             set
             {
-                if (value = true)
+                if (value == true )
                 {
                     Notify();
                     _productPrice = value;

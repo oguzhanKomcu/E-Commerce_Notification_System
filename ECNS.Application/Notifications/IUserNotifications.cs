@@ -11,6 +11,6 @@ namespace ECNS.Application.Notifications
     {
         void Update();
 
-        
+
     }
 }

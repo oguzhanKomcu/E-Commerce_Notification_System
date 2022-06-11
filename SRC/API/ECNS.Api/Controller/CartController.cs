@@ -1,5 +1,6 @@
 ﻿using ECNS.Application.Model.DTOs;
 using ECNS.Application.Service.CartService;
+using ECNS.Application.Service.ProductService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,13 @@ namespace ECNS.Api.Controller
     public class CartController : ControllerBase
     {
         private readonly ICartService _carttService;
-        public CartController(ICartService cartService)
+        private readonly IProductService _productService;
+        public CartController(ICartService cartService, IProductService productService)
         {
             _carttService = cartService;
+            _productService = productService;
         }
+
 
 
         /// <summary>
@@ -24,14 +28,31 @@ namespace ECNS.Api.Controller
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CartDto cart)
         {
-            if (cart is null)
-            {
-                return BadRequest();
-            }
 
-            await _carttService.Create(cart);
+            if (ModelState.IsValid)
+            {
+                var product = await _productService.GetById(cart.Product_Id);
+                if (product.Stock >= cart.Quantity)
+                {
+
+                    await _carttService.Create(cart);
+
+                    return Ok(cart);
+                }
+                else
+                {
+                    ModelState.AddModelError(String.Empty, "The quantity you want to select is more than the current stock status..!");
+                    return BadRequest(ModelState);
+                }
+
+            }
+            else
+            {
+                return BadRequest(String.Join(Environment.NewLine, ModelState.Values.SelectMany(h => h.Errors).Select(h => h.ErrorMessage + "" + h.Exception)));
+            }
             
-            return CreatedAtAction(nameof(GetById), new { id = cart.Id }, cart);
+        
+
         }
 
 

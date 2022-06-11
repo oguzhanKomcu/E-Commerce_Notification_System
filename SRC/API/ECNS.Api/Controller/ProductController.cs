@@ -86,10 +86,10 @@ namespace ECNS.Api.Controller
         /// <summary>
         /// Using this method, you can edit and update the reservation whose "id" is specified.
         /// </summary>
-        /// <param name="id">It is a required area and so type is int</param>
+        /// <param name="product">It is a required area and so type is int</param>
         /// <returns>If function is succeded will be return NoContent, than will be return Bad Request</returns>
-        [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update( [FromBody] UpdateProductDTO product)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateProductDTO product)
         {
 
             if (product.Price != null)
@@ -102,12 +102,13 @@ namespace ECNS.Api.Controller
 
                     if (user != true)
                     {
-                        //var user1 = users.Select(x => x.Product_Price > product.Price).FirstOrDefault();
+                       
                         
-                        if (users.Select(x => x.Product_Price > product.Price).FirstOrDefault())
+                        if (users.Select(x => x.Product_Price > product.Price || x.Product_Price < product.Price).FirstOrDefault())
                         {
                             ProductNotifications productNotifications = new ProductNotifications();
-                            productNotifications.Subscribe(new UserNotifications(item.UserName));
+                            productNotifications.Subscribe(new UserNotifications(item.UserName , product.Price, item.UserEmail));
+                            productNotifications.ProductPrice = true;
                         }
                     }
 

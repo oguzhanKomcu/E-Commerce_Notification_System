@@ -80,7 +80,7 @@ namespace ECNS.Api.Controller
 
             await _userRepository.Register(user);
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return Ok(user);
         }
 
 

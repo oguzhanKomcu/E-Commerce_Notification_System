@@ -8,9 +8,11 @@ namespace ECNS.Application.Model.DTOs
 {
     public  class CartDto
     {
-        public int Id { get; set; }
+    
         public string User_Id { get; set; }
         public int Product_Id { get; set; }
+
+        public int Quantity { get; set; }
 
 
 
