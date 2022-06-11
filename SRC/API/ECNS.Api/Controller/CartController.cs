@@ -1,11 +1,13 @@
 ﻿using ECNS.Application.Model.DTOs;
 using ECNS.Application.Service.CartService;
 using ECNS.Application.Service.ProductService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECNS.Api.Controller
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CartController : ControllerBase
@@ -21,9 +23,9 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// 
+        /// You can add a new cart using this method.
         /// </summary>
-        /// <param></param>
+        ///  <param name="cart">It is a required area and so type is model</param>
         /// <returns>If function is succeded will be return CreatedAtAction, than will be return Bad Request</returns>        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CartDto cart)
@@ -61,7 +63,7 @@ namespace ECNS.Api.Controller
         /// </summary>
         /// <param name="userId">It is a required area and so type is string</param>
         /// <returns>If function is succeded will be return Ok, than will be return NotFound</returns>
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{userId:string}")]
         public async Task<IActionResult> GetById(string userId)
         {
             var product = await _carttService.GetById(userId);
@@ -81,11 +83,11 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// This function can remove your product. 
+        /// This function can remove your cart. 
         /// </summary>
-        /// <param name="id">It is a required area and so type is int</param>
+        /// <param name="userId">It is a required area and so type is int</param>
         /// <returns>If function is succeded will be return NoContent, than will be return NotFound</returns>        
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{userId:string}")]
         public async Task<IActionResult> Delete(string userId)
         {
             var cart = await _carttService.GetById(userId);

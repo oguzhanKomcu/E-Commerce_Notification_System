@@ -27,7 +27,7 @@ namespace ECNS.Application.Notifications
         public void Update()
         {
             string fileName = @"D:\Loglar.txt";
-            string writeText = $"Sayın {_userName}  sepetinizde bulunan ürünün fiyatı {_propductPrice}  olarak değişmiştir..";
+            string writeText = $"Sayın {_userName}  sepetinizde bulunan ürünün fiyatı {_propductPrice} TL  olarak değişmiştir..";
             FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write);
             fs.Close();
 
@@ -40,17 +40,17 @@ namespace ECNS.Application.Notifications
         {
 
 
-            string writeText = $"Sayın {_userName}  sepetinizde bulunan ürünün fiyatı {_propductPrice}  olarak değişmiştir..";
+            string writeText = $"Sayın {_userName}  sepetinizde bulunan ürünün fiyatı {_propductPrice} TL  olarak değişmiştir..";
             SmtpClient smtpClient = new SmtpClient();
             MailMessage mail = new MailMessage();
             smtpClient.Credentials = new NetworkCredential("denemeoguzhan@outlook.com", "4585oguz");
             smtpClient.Port = 587;
             smtpClient.Host = "smtp-mail.outlook.com";
             smtpClient.EnableSsl = true;
-            mail.To.Add("oguzkomcu@gmail.com"); 
+            mail.To.Add(_email); 
             mail.From = new MailAddress("denemeoguzhan@outlook.com"); 
             mail.Subject = $"DATE : {DateTime.Now}  The price of the product in your cart has changed! "; 
-            mail.Body = $"Notification : {writeText}" + System.Environment.MachineName.ToString();
+            mail.Body = $"Bildirim : {writeText}" + System.Environment.MachineName.ToString();
 
             smtpClient.SendAsync(mail, (object)mail);
         }

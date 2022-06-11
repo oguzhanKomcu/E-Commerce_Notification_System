@@ -16,7 +16,7 @@ namespace ECNS.Domainn.Models.Entities
         public decimal Price { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
         public int Stock { get; set; }
         public int Category_Id { get; set; }
         public Category Category { get; set; }

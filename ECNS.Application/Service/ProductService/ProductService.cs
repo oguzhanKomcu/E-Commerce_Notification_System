@@ -36,14 +36,7 @@ namespace ECNS.Application.Service.ProductService
         {
             var product = _mapper.Map<Product>(model);
 
-            if (model.UploadPath != null)
-            {
-                using var image = Image.Load(model.UploadPath.OpenReadStream());
-                image.Mutate(x => x.Resize(256, 256));
-                string guid = Guid.NewGuid().ToString();
-                image.Save($"wwwroot/images/products/{guid}.jpg");
-                product.ImagePath = $"/images/products/{guid}.jpg";
-            }
+
 
             await _unitOfWork.ProductRepository.Create(product);
 
@@ -69,7 +62,12 @@ namespace ECNS.Application.Service.ProductService
                     Name = x.Name,
                     Description = x.Description,
                     Price = x.Price,
-                    Stock = x.Stock
+                    ImagePath = x.ImagePath,
+                    CategoryName = x.Category.Name,
+                    Stock = x.Stock,
+                    CategoryId = x.Category_Id,
+                    Color = x.Color,
+                    Size = x.Size
                 },
                 expression: x => x.Id == id &&
                                 x.Status != Status.Passive);
@@ -120,7 +118,8 @@ namespace ECNS.Application.Service.ProductService
                     CategoryName = x.Category.Name,
                     Stock = x.Stock,
                     CategoryId = x.Category_Id,
-                    Color = x.Color
+                    Color = x.Color,
+                    Size = x.Size
 
                 },
                 expression: x => x.Status != Status.Passive,

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECNS.Api.Controller
 {
 
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -31,7 +31,7 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// This function lists all made reservations.
+        /// This function lists all made products.
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetProducts")]
@@ -49,7 +49,7 @@ namespace ECNS.Api.Controller
         /// </summary>
         /// <param name="id">It is a required area and so type is string</param>
         /// <returns>If function is succeded will be return Ok, than will be return NotFound</returns>
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _productService.GetById(id);
@@ -66,25 +66,34 @@ namespace ECNS.Api.Controller
         }
 
         /// <summary>
-        /// 
+        /// You can add a new product using this method.
         /// </summary>
-        /// <param></param>
+        ///  <param name="product">It is a required area and so type is product</param>
         /// <returns>If function is succeded will be return CreatedAtAction, than will be return Bad Request</returns>        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDTO product)
         {
-            if (product is null)
+
+
+
+
+            if (ModelState.IsValid)
             {
-                return BadRequest();
+
+                await _productService.Create(product);
+
+                return Ok(product);
+            }
+            else
+            {
+                return BadRequest(String.Join(Environment.NewLine, ModelState.Values.SelectMany(h => h.Errors).Select(h => h.ErrorMessage + "" + h.Exception)));
             }
 
-            await _productService.Create(product);
 
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
         /// <summary>
-        /// Using this method, you can edit and update the reservation whose "id" is specified.
+        /// Using this method, you can edit and update the product whose "id" is specified.
         /// </summary>
         /// <param name="product">It is a required area and so type is int</param>
         /// <returns>If function is succeded will be return NoContent, than will be return Bad Request</returns>
@@ -138,12 +147,12 @@ namespace ECNS.Api.Controller
         /// <summary>
         /// This function can remove your product. 
         /// </summary>
-        /// <param name="id">It is a required area and so type is int</param>
+        /// <param name="productId">It is a required area and so type is int</param>
         /// <returns>If function is succeded will be return NoContent, than will be return NotFound</returns>        
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{productId:int}")]
+        public async Task<IActionResult> Delete(int productId)
         {
-            var customer = await _productService.GetById(id);
+            var customer = await _productService.GetById(productId);
 
             if (customer is null)
             {

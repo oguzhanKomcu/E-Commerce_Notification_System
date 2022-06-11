@@ -16,7 +16,8 @@ namespace ECNS.Application.Model.VMs
         public string CategoryName { get; set; }
         public int CategoryId { get; set; }
         public decimal Price { get; set; }
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
+        public string Size { get; set; }
         public int Stock { get; set; }
     }
 }

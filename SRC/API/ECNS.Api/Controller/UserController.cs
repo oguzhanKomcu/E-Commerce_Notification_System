@@ -2,11 +2,13 @@
 using ECNS.Application.Service.AppUserService;
 using ECNS.Domainn.Models.Entities;
 using ECNS.Domainn.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECNS.Api.Controller
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -21,9 +23,10 @@ namespace ECNS.Api.Controller
 
 
         /// <summary>
-        /// This function lists all made user.
+        ///With this function, you will log in to the system and receive a token. Type "Bearer" at the beginning of this token and type "Authorize" in the value section.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="user">This is a necessary area.</param>
+        /// <returns>If function is succeded will be return Ok(token and user), than will be return NotFound</returns>
         [Route("authenticate")]
         [HttpPost]
         public IActionResult Login([FromBody] LoginDTO user)
@@ -43,6 +46,7 @@ namespace ECNS.Api.Controller
         /// This function lists all made user.
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("Users")]
         public async Task<IActionResult> GetUsers()
         {
@@ -54,8 +58,8 @@ namespace ECNS.Api.Controller
         /// </summary>
         /// <param name="id">It is a required area and so type is string</param>
         /// <returns>If function is succeded will be return Ok, than will be return NotFound</returns>
-
-        [HttpGet("{id:length(24)}")]
+        [Authorize]
+        [HttpGet("{id:string}")]
         public IActionResult GetUser(string id)
         {
             var user = _userRepository.GetById(id);
