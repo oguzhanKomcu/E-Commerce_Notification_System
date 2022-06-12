@@ -14,11 +14,11 @@ namespace ECNS.Api.Controller
     public class UserController : ControllerBase
     {
 
-        private readonly IAppUserService _userRepository;
+        private readonly IAppUserService _userService;
 
-        public UserController(IAppUserService userRepository)
+        public UserController(IAppUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
 
@@ -31,7 +31,7 @@ namespace ECNS.Api.Controller
         [HttpPost]
         public IActionResult Login([FromBody] LoginDTO user)
         {
-            var token = _userRepository.Authentication(user.UserName, user.Password);
+            var token = _userService.Authentication(user.UserName, user.Password);
             if (user == null)
             {
                 return Unauthorized();
@@ -50,7 +50,7 @@ namespace ECNS.Api.Controller
         [HttpGet("Users")]
         public async Task<IActionResult> GetUsers()
         {
-            return Ok(await _userRepository.GetUsers().ConfigureAwait(false));
+            return Ok(await _userService.GetUsers().ConfigureAwait(false));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace ECNS.Api.Controller
         [HttpGet("{id:string}")]
         public IActionResult GetUser(string id)
         {
-            var user = _userRepository.GetById(id);
+            var user = _userService.GetById(id);
             if (user == null)
             {
                 return NotFound();
@@ -82,7 +82,7 @@ namespace ECNS.Api.Controller
                 return BadRequest();
             }
 
-            await _userRepository.Register(user);
+            await _userService.Register(user);
 
             return Ok(user);
         }
