@@ -43,7 +43,7 @@ namespace ECNS.Application.Notifications
             string writeText = $"Sayın {_userName}  sepetinizde bulunan ürünün fiyatı {_propductPrice} TL  olarak değişmiştir..";
             SmtpClient smtpClient = new SmtpClient();
             MailMessage mail = new MailMessage();
-            smtpClient.Credentials = new NetworkCredential("denemeoguzhan@outlook.com", "4585oguz");
+            smtpClient.Credentials = new NetworkCredential("denemeoguzhan@outlook.com", "***password**");
             smtpClient.Port = 587;
             smtpClient.Host = "smtp-mail.outlook.com";
             smtpClient.EnableSsl = true;
